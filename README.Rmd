@@ -70,3 +70,125 @@ for(i in seq_along(d)){
 horiz[l] * depth[l]
 ```
 
+# 3
+## a
+```{r}
+d <- readLines('data/3-input.txt')
+m <- matrix(as.integer(unlist(strsplit(d, ""))), ncol = 12, byrow = TRUE)
+
+gamma <- strtoi(paste0(as.integer(colMeans(m) > 0.5), collapse=""), base=2)
+epsilon <- strtoi(paste0(as.integer(colMeans(m) < 0.5), collapse=""), base=2)
+
+gamma * epsilon
+```
+
+## b
+```{r}
+# O2
+mi <- m
+for(i in 1:ncol(mi)){
+  if(nrow(mi) == 1) break
+  mi <- mi[which(mi[,i] == round(ifelse(mean(mi[,i]) == 0.5, 1, mean(mi[,i])))),,drop = F]
+  }
+
+o2 <- strtoi(paste0(as.vector(mi), collapse = ""), base=2)
+
+# CO2
+mi <- m
+for(i in 1:ncol(mi)){
+  if(nrow(mi) == 1) break
+  mi <- mi[which(mi[,i] == !round(ifelse(mean(mi[,i]) == 0.5, 1, mean(mi[,i])))),,drop = F]
+  }
+
+co2 <- strtoi(paste0(as.vector(mi), collapse = ""), base=2)
+
+o2 * co2
+```
+
+
+# 4
+## a
+```{r}
+d <- readLines('data/4-input.txt')
+
+# Extract numbers
+nums <- as.integer(unlist(strsplit(d[1], ",")))
+
+# Extract bingo boards
+# trimws to remove leading spaces for single digit numbers
+# gsub all double spaces to single spaces so I can strsplit on single spaces
+boards <-
+  lapply(
+    lapply(which(d == ""), function(x) gsub("  ", " ", trimws(d[(x+1):(x+5)]))),
+    function(x) matrix(as.integer(unlist(strsplit(paste0(x, combine=" "), " "))),
+                       ncol=5, byrow=TRUE))
+```
+
+Function to return if a matrix has a completed column or row (where completed numbers are NA)
+```{r}
+is_bingo <- function(m){
+  
+  check_rows <- apply(m, MARGIN = 1, function(x) all(is.na(x)))
+  check_cols <- apply(m, MARGIN = 2, function(x) all(is.na(x)))
+  
+  if(any(check_cols) | any(check_rows)){return(TRUE)} else {return(FALSE)}
+}
+```
+
+```{r}
+boards_tmp <- boards
+
+for(i in seq_along(nums)){
+  
+  # Update boards
+  boards_tmp <- lapply(boards_tmp, function(x) replace(x, x==nums[i], values = NA))
+  
+  # Test for any with BINGO
+  results <- sapply(boards_tmp, is_bingo)
+
+  # If any board has BINGO, return results
+  if(any(results)){
+    print(paste0("BINGO!"))
+    # hopefully only one board wins per number called...
+    winning_board <- boards_tmp[[which(results)[1]]] 
+    print(winning_board)
+    winning_board_sum <- sum(winning_board[!is.na(winning_board)])
+    number_called <- nums[i]
+    break}
+  }
+
+winning_board_sum * number_called
+```
+
+## b
+```{r}
+boards_tmp <- boards
+
+for(i in seq_along(nums)){
+  
+  # Update boards
+  boards_tmp <- lapply(boards_tmp, function(x) replace(x, x==nums[i], values = NA))
+  
+  # Test for any with BINGO
+  results <- sapply(boards_tmp, is_bingo)
+  
+  # If only one board remaining to get BINGO - save the ID of the board
+  # This will then run every time until the final board is solved
+  if(sum(!results) == 1){
+    print("One board left to get BINGO")
+    last_board_id <- which(!results)
+  }
+
+  # When all boards are solved, return the final board (solved) and the final
+  # number called
+  if(all(results)){
+    print("All boards have BINGO")
+    final_board <- boards_tmp[[last_board_id]]
+    final_number <- nums[i]
+    break
+  }
+}
+
+sum(final_board[!is.na(final_board)]) * final_number
+```
+
