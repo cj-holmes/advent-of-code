@@ -8,9 +8,9 @@ Attempting [advent of code](https://adventofcode.com/) 2021 in base R.
 I am a massive fan and regular user of the tidyverse, but every now and
 then I like to remind myself of what life used to be like…
 
-# 1
+# 1 Sonar Sweep
 
-## a
+## 1a
 
 ``` r
 d <- as.numeric(readLines('data/1-input.txt'))
@@ -18,7 +18,7 @@ sum(diff(d) > 0)
 #> [1] 1167
 ```
 
-## b
+## 1b
 
 ``` r
 r <- sapply(1:(length(d)-length(d)%%3), function(x) sum(d[x:(x+2)]))
@@ -26,9 +26,9 @@ sum(diff(r) > 0)
 #> [1] 1130
 ```
 
-# 2
+# 2 Dive!
 
-## a
+## 2a
 
 ``` r
 d <- readLines('data/2-input.txt')
@@ -41,7 +41,7 @@ horizontal * depth
 #> [1] 2120749
 ```
 
-## b
+## 2b
 
 ``` r
 l <- length(d) + 1
@@ -69,9 +69,9 @@ horiz[l] * depth[l]
 #> [1] 2138382217
 ```
 
-# 3
+# 3 Binary Diagnostic
 
-## a
+## 3a
 
 ``` r
 d <- readLines('data/3-input.txt')
@@ -84,7 +84,7 @@ gamma * epsilon
 #> [1] 1307354
 ```
 
-## b
+## 3b
 
 ``` r
 # O2
@@ -109,9 +109,9 @@ o2 * co2
 #> [1] 482500
 ```
 
-# 4
+# 4 Giant Squid
 
-## a
+## 4a
 
 ``` r
 d <- readLines('data/4-input.txt')
@@ -175,7 +175,7 @@ winning_board_sum * number_called
 #> [1] 23177
 ```
 
-## b
+## 4b
 
 ``` r
 boards_tmp <- boards

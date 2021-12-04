@@ -19,21 +19,21 @@ Attempting [advent of code](https://adventofcode.com/) 2021 in base R.
 
 I am a massive fan and regular user of the tidyverse, but every now and then I like to remind myself of what life used to be like...
 
-# 1
-## a
+# 1 Sonar Sweep
+## 1a
 ```{r}
 d <- as.numeric(readLines('data/1-input.txt'))
 sum(diff(d) > 0)
 ```
 
-## b
+## 1b
 ```{r}
 r <- sapply(1:(length(d)-length(d)%%3), function(x) sum(d[x:(x+2)]))
 sum(diff(r) > 0)
 ```
 
-# 2
-## a
+# 2 Dive!
+## 2a
 ```{r}
 d <- readLines('data/2-input.txt')
 direction <- sapply(strsplit(d, " "), `[[`, 1)
@@ -44,7 +44,7 @@ depth <- sum(magnitude[direction == "down"]) + sum(-magnitude[direction == "up"]
 horizontal * depth
 ```
 
-## b
+## 2b
 ```{r}
 l <- length(d) + 1
 aim <- rep(0, l)
@@ -70,8 +70,8 @@ for(i in seq_along(d)){
 horiz[l] * depth[l]
 ```
 
-# 3
-## a
+# 3 Binary Diagnostic
+## 3a
 ```{r}
 d <- readLines('data/3-input.txt')
 m <- matrix(as.integer(unlist(strsplit(d, ""))), ncol = 12, byrow = TRUE)
@@ -82,7 +82,7 @@ epsilon <- strtoi(paste0(as.integer(colMeans(m) < 0.5), collapse=""), base=2)
 gamma * epsilon
 ```
 
-## b
+## 3b
 ```{r}
 # O2
 mi <- m
@@ -106,8 +106,8 @@ o2 * co2
 ```
 
 
-# 4
-## a
+# 4 Giant Squid
+## 4a
 ```{r}
 d <- readLines('data/4-input.txt')
 
@@ -160,7 +160,7 @@ for(i in seq_along(nums)){
 winning_board_sum * number_called
 ```
 
-## b
+## 4b
 ```{r}
 boards_tmp <- boards
 
