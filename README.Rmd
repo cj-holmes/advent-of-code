@@ -14,8 +14,7 @@ knitr::opts_chunk$set(
 ```
 
 # advent-of-code
-
-Attempting [advent of code](https://adventofcode.com/) 2021 in base R.
+Attempting the 2021 [advent of code](https://adventofcode.com/) in **base R** only!
 
 I am a massive fan and regular user of the tidyverse, but every now and then I like to remind myself of what life used to be like...
 
@@ -88,18 +87,14 @@ gamma * epsilon
 mi <- m
 for(i in 1:ncol(mi)){
   if(nrow(mi) == 1) break
-  mi <- mi[which(mi[,i] == round(ifelse(mean(mi[,i]) == 0.5, 1, mean(mi[,i])))),,drop = F]
-  }
-
+  mi <- mi[which(mi[,i] == round(ifelse(mean(mi[,i]) == 0.5, 1, mean(mi[,i])))),,drop = F]}
 o2 <- strtoi(paste0(as.vector(mi), collapse = ""), base=2)
 
 # CO2
 mi <- m
 for(i in 1:ncol(mi)){
   if(nrow(mi) == 1) break
-  mi <- mi[which(mi[,i] == !round(ifelse(mean(mi[,i]) == 0.5, 1, mean(mi[,i])))),,drop = F]
-  }
-
+  mi <- mi[which(mi[,i] == !round(ifelse(mean(mi[,i]) == 0.5, 1, mean(mi[,i])))),,drop = F]}
 co2 <- strtoi(paste0(as.vector(mi), collapse = ""), base=2)
 
 o2 * co2
@@ -115,8 +110,8 @@ d <- readLines('data/4-input.txt')
 nums <- as.integer(unlist(strsplit(d[1], ",")))
 
 # Extract bingo boards
-# trimws to remove leading spaces for single digit numbers
-# gsub all double spaces to single spaces so I can strsplit on single spaces
+# trimws() to remove leading spaces for single digit numbers
+# gsub() all double spaces to single spaces so I can strsplit() on single spaces
 boards <-
   lapply(
     lapply(which(d == ""), function(x) gsub("  ", " ", trimws(d[(x+1):(x+5)]))),
