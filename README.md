@@ -9,7 +9,7 @@ Attempting the 2021 [advent of code](https://adventofcode.com/) in
 I am a massive fan and regular user of the tidyverse, but every now and
 then I like to remind myself of what life used to be like…
 
-# 1 Sonar Sweep
+# — Day 1: Sonar Sweep —
 
 ## 1a
 
@@ -27,7 +27,7 @@ sum(diff(r) > 0)
 #> [1] 1130
 ```
 
-# 2 Dive!
+# — Day 2: Dive! —
 
 ## 2a
 
@@ -70,7 +70,7 @@ horiz[l] * depth[l]
 #> [1] 2138382217
 ```
 
-# 3 Binary Diagnostic
+# — Day 3: Binary Diagnostic —
 
 ## 3a
 
@@ -106,7 +106,7 @@ o2 * co2
 #> [1] 482500
 ```
 
-# 4 Giant Squid
+# — Day 4: Giant Squid —
 
 ## 4a
 
@@ -211,7 +211,7 @@ sum(final_board[!is.na(final_board)]) * final_number
 #> [1] 6804
 ```
 
-# 5 Hydrothermal Venture
+# — Day 5: Hydrothermal Venture —
 
 ## 5a
 

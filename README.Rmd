@@ -18,7 +18,7 @@ Attempting the 2021 [advent of code](https://adventofcode.com/) in **base R** on
 
 I am a massive fan and regular user of the tidyverse, but every now and then I like to remind myself of what life used to be like...
 
-# 1 Sonar Sweep
+# --- Day 1: Sonar Sweep ---
 ## 1a
 ```{r}
 d <- as.numeric(readLines('data/1-input.txt'))
@@ -31,7 +31,7 @@ r <- sapply(1:(length(d)-length(d)%%3), function(x) sum(d[x:(x+2)]))
 sum(diff(r) > 0)
 ```
 
-# 2 Dive!
+# --- Day 2: Dive! ---
 ## 2a
 ```{r}
 d <- readLines('data/2-input.txt')
@@ -69,7 +69,7 @@ for(i in seq_along(d)){
 horiz[l] * depth[l]
 ```
 
-# 3 Binary Diagnostic
+# --- Day 3: Binary Diagnostic ---
 ## 3a
 ```{r}
 d <- readLines('data/3-input.txt')
@@ -101,7 +101,7 @@ o2 * co2
 ```
 
 
-# 4 Giant Squid
+# --- Day 4: Giant Squid ---
 ## 4a
 ```{r}
 d <- readLines('data/4-input.txt')
@@ -187,7 +187,7 @@ for(i in seq_along(nums)){
 sum(final_board[!is.na(final_board)]) * final_number
 ```
 
-# 5 Hydrothermal Venture
+# --- Day 5: Hydrothermal Venture ---
 ## 5a
 * Read data and wrangle to dataframe
 ```{r}
