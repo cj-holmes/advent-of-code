@@ -126,8 +126,8 @@ boards <-
                        ncol=5, byrow=TRUE))
 ```
 
-Function to return if a matrix has a completed column or row (where
-completed numbers are NA)
+-   Function to test if a matrix has a completed column or row (where
+    completed numbers are NA)
 
 ``` r
 is_bingo <- function(m){
@@ -209,4 +209,89 @@ for(i in seq_along(nums)){
 
 sum(final_board[!is.na(final_board)]) * final_number
 #> [1] 6804
+```
+
+# 5 Hydrothermal Venture
+
+## 5a
+
+-   Read data and wrangle to dataframe
+
+``` r
+d <- 
+  do.call(rbind,
+  lapply(
+    strsplit(readLines('data/5-input.txt'), ' -> '),
+    function(x) data.frame(x1 = as.numeric(strsplit(x, ",")[[1]][1]),
+                           y1 = as.numeric(strsplit(x, ",")[[1]][2]),
+                           x2 = as.numeric(strsplit(x, ",")[[2]][1]),
+                           y2 = as.numeric(strsplit(x, ",")[[2]][2]))))
+```
+
+-   Visaulise all lines for interest
+
+``` r
+xmin <- min(c(d$x1, d$x2))
+xmax <- max(c(d$x1, d$x2))
+ymin <- min(c(d$y1, d$y2))
+ymax <- max(c(d$y1, d$y2))
+
+plot.new()
+plot.window(xlim = c(xmin, xmax), ylim = c(ymin, ymax), asp=1)
+segments(x0 = d$x1, x1 = d$x2, y0 = d$y1, y1 = d$y2)
+axis(1)
+axis(2)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+-   Subset to pure horizontal or vertical lines
+-   Initialise empty list for output
+-   Generate all coordinates along each line
+
+``` r
+sl <- d[(d$x1 == d$x2) | (d$y1 == d$y2),]
+
+l <- list()
+for(i in 1:nrow(sl)){
+  if(sl$x1[i] == sl$x2[i]){
+    # Pure horizontal
+    l[[i]] <- paste0(sl$x1[i], ",", (sl$y1[i]:sl$y2[i]))
+  } else if(sl$y1[i] == sl$y2[i]){
+    # Pure vertical
+    l[[i]] <- paste0((sl$x1[i]:sl$x2[i]), ",",  sl$y1[i])
+  }
+}
+
+# Count unique coords and how many are appear twice or more
+counts <- table(unlist(l))
+length(counts[counts >=2])
+#> [1] 7380
+```
+
+## 5b
+
+-   Same as above but on the full data set adding a third else statement
+    for diagonal lines
+-   The question tells us diagonals are only ever at 45 degrees - so the
+    computation of the coordinates is simple
+
+``` r
+l <- list()
+for(i in 1:nrow(d)){
+  if(d$x1[i] == d$x2[i]){
+    # Pure horizontal
+    l[[i]] <- paste0(d$x1[i], ",", (d$y1[i]:d$y2[i]))
+  } else if(d$y1[i] == d$y2[i]){
+    # Pure vertical
+    l[[i]] <- paste0((d$x1[i]:d$x2[i]), ",",  d$y1[i])
+  } else {
+    # Diagonal
+    l[[i]] <- paste0((d$x1[i]:d$x2[i]), ",",  (d$y1[i]:d$y2[i]))
+  }
+}
+
+counts <- table(unlist(l))
+length(counts[counts >=2])
+#> [1] 21373
 ```
