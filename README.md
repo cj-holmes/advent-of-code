@@ -349,3 +349,40 @@ options(scipen = 999)
 sum(o$Freq)
 #> [1] 1681503251694
 ```
+
+-   For my own interest - plot the exponential growth and model it
+
+``` r
+x <- table(d)
+o <- merge(data.frame(d = 0:8), data.frame(x), all = TRUE)
+o$Freq[is.na(o$Freq)] <- 0
+
+df <- data.frame(day = 1:40, n=NA)
+
+for(i in 1:nrow(df)){
+  births <- o$Freq[o$d == 0]
+  o$d <- c(o$d[9], o$d[1:8])
+  o$Freq[o$d == 6] <- o$Freq[o$d == 6] + births
+  df$n[df$day == i] <- sum(o$Freq)}
+
+mod <- nls(n~a*exp(b*day), data = df, start = list(a=1, b=0.1))
+summary(mod)
+#> 
+#> Formula: n ~ a * exp(b * day)
+#> 
+#> Parameters:
+#>      Estimate  Std. Error t value            Pr(>|t|)    
+#> a 357.6742910  11.3410972   31.54 <0.0000000000000002 ***
+#> b   0.0859893   0.0009015   95.38 <0.0000000000000002 ***
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> Residual standard error: 143.2 on 38 degrees of freedom
+#> 
+#> Number of iterations to convergence: 10 
+#> Achieved convergence tolerance: 0.000001411
+plot(df$day, df$n)
+lines(predict(mod), col=2)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->

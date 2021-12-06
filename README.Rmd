@@ -301,3 +301,24 @@ for(i in 1:256){
 options(scipen = 999)
 sum(o$Freq)
 ```
+
+* For my own interest - plot the exponential growth and model it
+```{r fig.width=6, fig.height=6}
+x <- table(d)
+o <- merge(data.frame(d = 0:8), data.frame(x), all = TRUE)
+o$Freq[is.na(o$Freq)] <- 0
+
+df <- data.frame(day = 1:40, n=NA)
+
+for(i in 1:nrow(df)){
+  births <- o$Freq[o$d == 0]
+  o$d <- c(o$d[9], o$d[1:8])
+  o$Freq[o$d == 6] <- o$Freq[o$d == 6] + births
+  df$n[df$day == i] <- sum(o$Freq)}
+
+mod <- nls(n~a*exp(b*day), data = df, start = list(a=1, b=0.1))
+summary(mod)
+plot(df$day, df$n)
+lines(predict(mod), col=2)
+```
+
