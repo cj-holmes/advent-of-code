@@ -295,3 +295,57 @@ counts <- table(unlist(l))
 length(counts[counts >=2])
 #> [1] 21373
 ```
+
+# — Day 6: Lanternfish —
+
+> Each day, a 0 becomes a 6 and adds a new 8 to the end of the list,
+> while each other number decreases by 1 if it was present at the start
+> of the day.
+
+-   Read data
+
+``` r
+d <- scan('data/6-input.txt', integer(), sep = ",")
+```
+
+## 6a
+
+-   Create a dataframe showing the count of each day value
+-   Left join to all possible day values (0:8) so I have all options
+-   Iterate over 1 to 80 days shifting the day values by 1
+    -   Zeros roll over to be eights (newly born lantern fish)
+    -   Zeros also needed to be added to the current number of sixes as
+        they start their cycle again
+
+``` r
+x <- table(d)
+o <- merge(data.frame(d = 0:8), data.frame(x), all = TRUE)
+o$Freq[is.na(o$Freq)] <- 0
+
+for(i in 1:80){
+  births <- o$Freq[o$d == 0]
+  o$d <- c(o$d[9], o$d[1:8])
+  o$Freq[o$d == 6] <- o$Freq[o$d == 6] + births}
+
+sum(o$Freq)
+#> [1] 372984
+```
+
+## 6b
+
+-   Run again for 256 days
+
+``` r
+x <- table(d)
+o <- merge(data.frame(d = 0:8), data.frame(x), all = TRUE)
+o$Freq[is.na(o$Freq)] <- 0
+
+for(i in 1:256){
+  births <- o$Freq[o$d == 0]
+  o$d <- c(o$d[9], o$d[1:8])
+  o$Freq[o$d == 6] <- o$Freq[o$d == 6] + births}
+
+options(scipen = 999)
+sum(o$Freq)
+#> [1] 1681503251694
+```
