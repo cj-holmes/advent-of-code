@@ -386,3 +386,34 @@ lines(predict(mod), col=2)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+# — Day 7: The Treachery of Whales —
+
+-   Read data and visualise the distribution of starting positions for
+    interest
+
+``` r
+d <- scan('data/7-input.txt', integer(), sep=",")
+hist(d, 50)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+# 7a
+
+``` r
+min(sapply(seq_along(d), function(x) sum(abs(d[x]-d))))
+#> [1] 345197
+```
+
+# 7b
+
+``` r
+new_fuel_cost <- function(x, starting_positions){
+  simple_cost <- abs(starting_positions[x] - starting_positions)
+  sum(sapply(simple_cost, function(x) if(x==0){0}else{sum(x:1)}))
+  }
+
+min(sapply(seq_along(d), new_fuel_cost, starting_positions = d))
+#> [1] 96361606
+```
