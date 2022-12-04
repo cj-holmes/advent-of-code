@@ -344,3 +344,126 @@ new_fuel_cost <- function(x, starting_positions){
 min(sapply(seq_along(d), new_fuel_cost, starting_positions = d))
 ```
 
+
+# --- Day 8: Seven Segment Search ---
+
+## 8a
+```{r}
+d <- readLines('data/8-input.txt')
+
+# Store patterns and output in a dataframe
+l <- lapply(d, function(x) unlist(strsplit(x, " \\| ")))
+
+df <- data.frame(pattern = sapply(l, `[[`, 1),
+                 output = sapply(l, `[[`, 2),
+                 stringsAsFactors = FALSE)
+```
+
+```{r}
+sum(unlist(lapply(lapply(df$output, function(x) unlist(strsplit(x, " "))), nchar)) %in% c(2, 4, 3, 7))
+```
+
+## 8b
+* Define a lookup of the segments used in each digit
+```{r}
+segs <- c(
+  "abcefg" = "0",
+  "cf" = "1",
+  "acdeg" = "2",
+  "acdfg" = "3",
+  "bcdf" = "4",
+  "abdfg" = "5",
+  "abdefg" = "6",
+  "acf" = "7",
+  "abcdefg" = "8",
+  "abcdfg" = "9"
+  )
+```
+
+* I can really only apologise to anyone who stumbles upon this solution
+* I went down an inelegant, inefficient rabbit hole - and I just had to keep going to get out of the other side
+* It got the right answer but it's awful. I don't even want to come back and look at it!
+```{r}
+decoded_outputs <- vector(length = nrow(df))
+for(i in 1:nrow(df)){
+
+  # Define a lookup vector to link cables to segments
+  o <- setNames(rep(NA, 7), letters[1:7])
+  
+  # Make a dataframe with patterns (sorted alphabetically), their number of characters and their letters
+  x <- sapply(unlist(strsplit(df$pattern[i], " ")), function(x) paste0(sort(unlist(strsplit(x, ""))), collapse = ""))
+  t <- data.frame(x = x, stringsAsFactors = FALSE)
+  t$nc <- sapply(t$x, nchar)
+  t$l <- lapply(x, function(x) unlist(strsplit(x, "")))
+  
+  # A is the connection in 7 thats not in 1
+  o["a"] = setdiff(t$l[t$nc == 3][[1]], t$l[t$nc == 2][[1]])
+  
+  # B/D are in 4 but not in 1 (but we're not sure which yet)
+  tmp_bd <- setdiff(t$l[t$nc == 4][[1]], t$l[t$nc == 2][[1]])
+  
+  # The six segmen digits allow me to deduce which is which...
+  # Which of the 6 segments digits have all segments in the 7 and the temporary BD segments
+  six_segments <- t$l[t$nc == 6]
+  
+  nine <- which(sapply(six_segments, function(x) all(c(t$l[t$nc == 3][[1]], tmp_bd) %in% x)))
+  o["g"] <- setdiff(unlist(six_segments[nine]), c(t$l[t$nc == 3][[1]], tmp_bd)) 
+  
+  six <- which(!(sapply(six_segments, function(x) all(t$l[t$nc == 2][[1]] %in% x))))
+  o["e"] <- setdiff(unlist(six_segments[six]), c(o["g"], tmp_bd, t$l[t$nc == 3][[1]]))
+  
+  # Can now deduce the F and C segment connections
+  o["f"] <- t$l[t$nc == 2][[1]][t$l[t$nc == 2][[1]] %in% unlist(six_segments[six])]
+  o["c"] <- t$l[t$nc == 2][[1]][!t$l[t$nc == 2][[1]] %in% o["f"]]
+  
+  # Can now get B and D
+  zero <- setdiff(seq_along(six_segments), c(six, nine))
+  o["d"] <- tmp_bd[!tmp_bd %in% unlist(six_segments[zero])]
+  o["b"] <- tmp_bd[!tmp_bd %in% o["d"]]
+  
+  # Add a column of the decoded pattern and the output number
+  o <- setNames(names(o), o)
+  t$real <- lapply(t$l, function(x) o[x])
+  t$number <- sapply(t$real, function(x) segs[paste0(sort(x), collapse = "")])
+  
+  # Order each of the ouput digits alphabetically
+  outputs <- sapply(unlist(strsplit(df$output[[i]], " ")), function(x) paste0(sort(unlist(strsplit(x, ""))), collapse=""))
+  
+  # Decode the outputs
+  decoded_outputs[i] <- as.integer(paste0(sapply(outputs, function(x) t$number[t$x == x]), collapse=""))
+  }
+
+sum(decoded_outputs)
+```
+
+# --- Day 9: Smoke Basin ---
+
+## 9a
+```{r}
+d <- readLines('data/9-input.txt')
+l <- nchar(d)
+
+dm <- matrix(unlist(lapply(d, function(x) as.integer(unlist(strsplit(x, ""))))), ncol = l, byrow = TRUE)
+
+# Buffer the matrix with a single element of value 10
+dm <- rbind(matrix(10, nrow=1, ncol=l), dm, matrix(10, nrow=1, ncol=l))
+dm <- cbind(matrix(10, nrow=l+2, ncol=1), dm, matrix(10, nrow=l+2, ncol=1))
+```
+
+
+```{r}
+o <- 
+  dm[2:101, 2:101][(dm[2:101, 2:101] < dm[1:100, 2:101]) &  
+                     (dm[2:101, 2:101] < dm[3:102, 2:101]) &
+                     (dm[2:101, 2:101] < dm[2:101, 1:100]) &
+                     (dm[2:101, 2:101] < dm[2:101, 3:102])]
+
+sum(o+1)
+```
+
+
+## 9b
+```{r}
+
+```
+
