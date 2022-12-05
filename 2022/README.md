@@ -1,16 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# advent-of-code
+# Advent of code 2022
 
 ``` r
 library(tidyverse)
 library(here)
 ```
 
-# — Day 1: Calorie Counting —
+## — Day 1: Calorie Counting —
 
-## 1a
+### 1a
 
 ``` r
 d <- 
@@ -31,7 +31,7 @@ d |>
 #> 1   183    67450
 ```
 
-## 1b
+### 1b
 
 ``` r
 d |> 
@@ -45,9 +45,9 @@ d |>
 #> 1          199357
 ```
 
-# — Day 2: Rock Paper Scissors —
+## — Day 2: Rock Paper Scissors —
 
-## 2a
+### 2a
 
 ``` r
 result_lu <- c(l = 0, d = 3, w = 6)
@@ -99,9 +99,9 @@ sum(d$score)
 #> [1] 11186
 ```
 
-# — Day 3: Rucksack Reorganization —
+## — Day 3: Rucksack Reorganization —
 
-## 3a
+### 3a
 
 ``` r
 priority_lu <- set_names(1:52, c(letters, LETTERS))
@@ -118,7 +118,7 @@ sum(d$priority)
 #> [1] 8176
 ```
 
-## 3b
+### 3b
 
 ``` r
 d |> 
@@ -131,9 +131,9 @@ d |>
 #> [1] 2689
 ```
 
-# — Day 4: Camp Cleanup —
+## — Day 4: Camp Cleanup —
 
-## 4a
+### 4a
 
 ``` r
 d <-
@@ -152,10 +152,79 @@ sum(d$full_cover)
 #> [1] 471
 ```
 
-## 4b
+### 4b
 
 ``` r
 d <- d |> mutate(any_cover = lengths(intersect) > 0)
 sum(d$any_cover)  
 #> [1] 888
+```
+
+## — Day 5: Supply Stacks —
+
+Parse the starting (ground state) of the crates from the instructions
+
+``` r
+ground_state <- 
+    read_fwf(here('2022', 'data-in', '5.txt'), n_max = 8) |> 
+    map(~str_remove_all(.x, '[:PUNCT:]')) |> 
+    map(~.x[!is.na(.x)])
+#> Rows: 8 Columns: 9
+#> ── Column specification ────────────────────────────────────────────────────────
+#> 
+#> chr (9): X1, X2, X3, X4, X5, X6, X7, X8, X9
+#> 
+#> ℹ Use `spec()` to retrieve the full column specification for this data.
+#> ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+# Make a copy of the ground state
+ground_state_tmp <- ground_state
+```
+
+Parse the instructions to a dataframe
+
+``` r
+ins <- 
+    read_lines(here('2022', 'data-in', '5.txt'), skip = 10) |> 
+    tibble(raw = _) |> 
+    mutate(
+        n = str_extract(raw, '(?<=move )[0-9]+') |> as.integer(),
+        from = str_extract(raw, '(?<=from )[0-9]+') |> as.integer(),
+        to = str_extract(raw, '(?<=to )[0-9]+') |> as.integer())
+```
+
+### 5a
+
+``` r
+for(i in 1:nrow(ins)){
+    # Select the 1:n crates from the FROM column and reverse their order
+    # append them to the start of the TO column
+    ground_state[[ins$to[i]]] <- 
+        c(rev(ground_state[[ins$from[i]]][1:ins$n[i]]), ground_state[[ins$to[i]]])
+    
+    # Remove the 1:n crates from the FROM column
+    ground_state[[ins$from[i]]] <- ground_state[[ins$from[i]]][-(1:ins$n[i])]}
+
+# Extract and combine first crate of each column
+ground_state |> map_chr(~.x[1]) |> paste0(collapse = "")
+#> [1] "TLFGBZHCN"
+```
+
+### 5b
+
+``` r
+# Re initialise the ground state
+ground_state <- ground_state_tmp
+
+for(i in 1:nrow(ins)){
+    # Select the 1:n crates from the FROM column and DO NOT reverse their order
+    # append them to the start of the TO column
+    ground_state[[ins$to[i]]] <- 
+        c(ground_state[[ins$from[i]]][1:ins$n[i]], ground_state[[ins$to[i]]])
+    
+    ground_state[[ins$from[i]]] <- ground_state[[ins$from[i]]][-(1:ins$n[i])]}
+
+# Extract and combine first crate of each column
+ground_state |> map_chr(~.x[1]) |> paste0(collapse = "")
+#> [1] "QRQFHFWCL"
 ```
