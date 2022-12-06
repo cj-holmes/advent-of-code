@@ -228,3 +228,31 @@ for(i in 1:nrow(ins)){
 ground_state |> map_chr(~.x[1]) |> paste0(collapse = "")
 #> [1] "QRQFHFWCL"
 ```
+
+## — Day 6: Tuning Trouble —
+
+``` r
+d <- readr::read_lines(here('2022', 'data-in', '6.txt')) |> str_split("") |> unlist()
+```
+
+### 6a
+
+Start of package marker length = 4
+
+``` r
+marker_length <- 4
+for(i in marker_length:length(d)) if(n_distinct(d[(i-(marker_length-1)):i]) == marker_length) break
+i
+#> [1] 1134
+```
+
+### 6b
+
+Start of message marker length = 14
+
+``` r
+marker_length <- 14
+for(i in marker_length:length(d)) if(n_distinct(d[(i-(marker_length-1)):i]) == marker_length) break
+i
+#> [1] 2263
+```
