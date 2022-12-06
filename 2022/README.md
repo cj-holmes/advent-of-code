@@ -232,7 +232,7 @@ ground_state |> map_chr(~.x[1]) |> paste0(collapse = "")
 ## — Day 6: Tuning Trouble —
 
 ``` r
-d <- readr::read_lines(here('2022', 'data-in', '6.txt')) |> str_split("") |> unlist()
+d <- (read_lines(here('2022', 'data-in', '6.txt')) |> str_split(""))[[1]]
 ```
 
 ### 6a
